@@ -1,0 +1,31 @@
+{
+  "name": "student-union-management-backend",
+  "version": "1.0.0",
+  "description": "这是后端项目",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "nodemon": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/messi0087/student-union-management-backend.git"
+  },
+  "author": "CuiHu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/messi0087/student-union-management-backend/issues"
+  },
+  "homepage": "https://github.com/messi0087/student-union-management-backend#readme",
+  "devDependencies": {
+    "express": "^4.15.2",
+    "nodemon": "^1.19.4"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "mysql2": "^2.0.2",
+    "sequelize": "^5.21.2",
+    "socket.io": "^2.3.0"
+  }
+}
