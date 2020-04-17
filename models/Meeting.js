@@ -23,21 +23,49 @@ Meeting.init({
     type: Sequelize.STRING,
     allowNull: false
   },
-  meeting_time: {
-    type: Sequelize.STRING,
-    allowNull: false
-  },
   meeting_content: {
     type: Sequelize.STRING,
-    allowNull: true
+    allowNull: false
   },
-  meeting_department:{
+  meeting_start_time: {
     type: Sequelize.STRING,
     allowNull: false
   },
+  meeting_end_time: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  meeting_situation: {
+    type: Sequelize.INTEGER,
+    allowNull: false
+  },
+  meeting_reviewer_department:{
+    type: Sequelize.STRING,
+    allowNull: true
+  },
   meeting_reviewer:{
+    type: Sequelize.STRING,
+    allowNull: true
+  },
+  meeting_reviewer_position:{
     type: Sequelize.INTEGER,
     allowNull: true
+  },
+  meeting_originator_department:{
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  meeting_originator:{
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  meeting_originator_position:{
+    type: Sequelize.INTEGER,
+    allowNull: false
+  },
+  meeting_originator_id:{
+    type: Sequelize.INTEGER,
+    allowNull: false
   },
   createdAt: {
     type: Sequelize.DATE,
@@ -60,17 +88,6 @@ Meeting.init({
 });
 //
 
-Meeting.sync({force: true}).then(() => console.log('SUCCESS CREATE TABLE Meeting')).catch(err => console.log(err));
-
-// // 创建关联增加数据
-// User.sync({ force: true }).then(() => {
-//     // Now the `users` table in the database corresponds to the model definition
-//     return User.create({
-//         name: 'Johsns',
-//         email: 'Hancoscks@123',
-//         password:'a11s2',
-//     });
-// });
-
+// Meeting.sync({force: true}).then(() => console.log('SUCCESS CREATE TABLE Meeting')).catch(err => console.log(err));
 
 module.exports =Meeting;

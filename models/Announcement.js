@@ -4,10 +4,10 @@ const sequelize = require('../data-base/index');
 
 
 //实例化数据模板
-class User extends Model{}
-User.init({
+class Announcement extends Model{}
+Announcement.init({
   // attributes
-  user_id:{
+  announcement_id:{
     type:Sequelize.INTEGER,
     primaryKey:true,            //主键
     allowNull:false,            //不允许空
@@ -15,33 +15,25 @@ User.init({
     unique: true                //要求不能重复
     // defaultValue:Sequelize.UUIDV1
   },
-  user_name: {
+  announcement_theme: {
     type: Sequelize.STRING,
     allowNull: false
   },
-  user_email: {
+  announcement_content: {
     type: Sequelize.STRING,
     allowNull: false
   },
-  user_password: {
+  announcement_department:{
     type: Sequelize.STRING,
     allowNull: false
   },
-  user_authority:{
+  announcement_originator:{
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  announcement_position:{
     type: Sequelize.INTEGER,
     allowNull: false
-  },
-  user_departments:{
-    type: Sequelize.STRING,
-    allowNull: false
-  },
-  user_phone_number:{
-    type: Sequelize.STRING,
-    allowNull: false
-  },
-  user_avatar:{
-    type: Sequelize.STRING,
-    allowNull: true
   },
   createdAt: {
     type: Sequelize.DATE,
@@ -55,15 +47,27 @@ User.init({
   //实例连接
   sequelize,
   //模型名称
-  modelName:'User',
+  modelName:'Announcement',
   freezeTableName:true,
   timestamps: true,
   // 定义表的名称
-  tableName: 'user_table',
+  tableName: 'announcement_table',
   //options
 });
+//
 
-// User.sync({force: true}).then(() => console.log('SUCCESS CREATE TABLE Activity')).catch(err => console.log(err));
+// Announcement.sync({force: true}).then(() => console.log('SUCCESS CREATE TABLE Activity')).catch(err => console.log(err));
+
+// // 创建关联增加数据
+// User.sync({ force: true }).then(() => {
+//     // Now the `users` table in the database corresponds to the model definition
+//     return User.create({
+//         name: 'Johsns',
+//         email: 'Hancoscks@123',
+//         password:'a11s2',
+//     });
+// });
 
 
-module.exports =User;
+module.exports =Announcement;
+

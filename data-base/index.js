@@ -16,19 +16,7 @@ const sequelize = new Sequelize(config.database.Database, config.database.User, 
   //东八时区,数据库的时间设置
   timezone: config.timezone ,
 
-  // // SQLite only
-  // storage: 'path/to/database.sqlite'
 });
-
-// //执行连接数据库
-// sequelize
-//     .authenticate()
-//     .then(function(err) {
-//         console.log('Connection has been established successfully.');
-//     })
-//     .catch(function (err) {
-//         console.log('Unable to connect to the database:', err);
-//     });
 
 module.exports =sequelize;
 

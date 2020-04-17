@@ -27,8 +27,8 @@ config = {
   pool: {
     max: 5,
     min: 0,
-    acquire: 30000,
-    idle: 10000
+    acquire: 30000, // 连接超时时间，默认 30000，ms
+    idle: 10000 // 最大闲置时间，默认 10000，ms
   },
 
 };

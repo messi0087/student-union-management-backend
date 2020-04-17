@@ -23,21 +23,49 @@ Activity.init({
     type: Sequelize.STRING,
     allowNull: false
   },
+  activity_content: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  activity_charge: {
+    type: Sequelize.INTEGER,
+    allowNull: false
+  },
   activity_time: {
     type: Sequelize.STRING,
     allowNull: false
   },
-  activity_content: {
+  activity_situation: {
+    type: Sequelize.INTEGER,
+    allowNull: false
+  },
+  activity_reviewer_department:{
     type: Sequelize.STRING,
     allowNull: true
   },
-  activity_department:{
+  activity_reviewer:{
+    type: Sequelize.STRING,
+    allowNull: true
+  },
+  activity_reviewer_position:{
+    type: Sequelize.INTEGER,
+    allowNull: true
+  },
+  activity_originator_department:{
     type: Sequelize.STRING,
     allowNull: false
   },
-  activity_reviewer:{
+  activity_originator:{
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  activity_originator_position:{
     type: Sequelize.INTEGER,
-    allowNull: true
+    allowNull: false
+  },
+  activity_originator_id:{
+    type: Sequelize.INTEGER,
+    allowNull: false
   },
   createdAt: {
     type: Sequelize.DATE,
