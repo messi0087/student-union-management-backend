@@ -303,6 +303,7 @@ router.get("/getAddressBook", async (req, res) => {
     if(findResult && findResult.length > 0) {
       for( let data of findResult) {
         let newData = {
+          id: data.user_id,
           name: data.user_name,
           departments: data.user_departments,
           email: data.user_email,

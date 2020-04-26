@@ -2,6 +2,12 @@ const express = require('express')
 const router = express.Router()
 //引入 Meeting模型
 const Meeting = require('../../models/Meeting');
+const getPosition = require('../../utils/get_position')
+//引入 Message模型
+const Message = require('../../models/Message');
+//引入 User模型
+const User = require('../../models/User');
+
 const passport =require('passport');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
@@ -59,7 +65,191 @@ router.post('/increaseMeeting',passport.authenticate('jwt', { session: false }) 
   }
 
   Meeting.create({...newMeeting})
-    .then( () =>{
+    .then( (item) =>{
+
+      if( (user_departments ==='体育部' || user_departments ==='体育部') && user_authority ===4 ){
+        User.findAll({
+          where: {
+            user_departments: '文体中心',
+          }
+        })
+          .then(res => {
+            for (let people of res) {
+              const newMessage = {
+                message_theme: '会议申请通知',
+                message_content: `${user_name}${getPosition.Position(user_authority)}新增一条会议申请，请您查看`,
+                message_start_time:item.createdAt.toString(),
+                message_push_people:people.user_id,
+                message_type:2
+              }
+              Message.create({...newMessage})
+                .catch(error=>console.log(error.message))
+            }
+          })
+          .catch(error => console.log(error.message));
+      }
+
+      else if( (user_departments ==='记者部' || user_departments ==='宣传部') && user_authority ===4 ){
+        User.findAll({
+          where: {
+            user_departments: '新闻中心',
+          }
+        })
+          .then(res => {
+            for (let people of res) {
+              const newMessage = {
+                message_theme: '会议申请通知',
+                message_content: `${user_name}${getPosition.Position(user_authority)}新增一条会议申请，请您查看`,
+                message_start_time:item.createdAt.toString(),
+                message_push_people:people.user_id,
+                message_type:2
+              }
+              Message.create({...newMessage})
+                .catch(error=>console.log(error.message))
+            }
+          })
+          .catch(error => console.log(error.message));
+      }
+
+      else if( (user_departments ==='办公室' || user_departments ==='外联部') && user_authority ===4 ){
+        User.findAll({
+          where: {
+            user_departments: '学办中心',
+          }
+        })
+          .then(res => {
+            for (let people of res) {
+              const newMessage = {
+                message_theme: '活动会议通知',
+                message_content: `${user_name}${getPosition.Position(user_authority)}新增一条会议申请，请您查看`,
+                message_start_time:item.createdAt.toString(),
+                message_push_people:people.user_id,
+                message_type:2
+              }
+              Message.create({...newMessage})
+                .catch(error=>console.log(error.message))
+            }
+          })
+          .catch(error => console.log(error.message));
+      }
+
+      else if( (user_departments ==='组织部' || user_departments ==='青年志愿者协会') && user_authority ===4 ){
+        User.findAll({
+          where: {
+            user_departments: '团学中心',
+          }
+        })
+          .then(res => {
+            for (let people of res) {
+              const newMessage = {
+                message_theme: '会议申请通知',
+                message_content: `${user_name}${getPosition.Position(user_authority)}新增一条会议申请，请您查看`,
+                message_start_time:item.createdAt.toString(),
+                message_push_people:people.user_id,
+                message_type:2
+              }
+              Message.create({...newMessage})
+                .catch(error=>console.log(error.message))
+            }
+          })
+          .catch(error => console.log(error.message));
+      }
+
+      else if( (user_departments ==='科竞部' || user_departments ==='创业部') && user_authority ===4 ){
+        User.findAll({
+          where: {
+            user_departments: '科创中心',
+          }
+        })
+          .then(res => {
+            for (let people of res) {
+              const newMessage = {
+                message_theme: '会议申请通知',
+                message_content: `${user_name}${getPosition.Position(user_authority)}新增一条会议申请，请您查看`,
+                message_start_time:item.createdAt.toString(),
+                message_push_people:people.user_id,
+                message_type:2
+              }
+              Message.create({...newMessage})
+                .catch(error=>console.log(error.message))
+            }
+          })
+          .catch(error => console.log(error.message));
+      }
+
+      else if( (user_departments ==='文体中心' || user_departments ==='新闻中心' || user_departments ==='学办中心' ||
+        user_departments ==='团学中心' || user_departments ==='科创中心') && user_authority ===2 ){
+        User.findAll({
+          where: {
+            user_authority: 1,
+          }
+        })
+          .then(res => {
+            for (let people of res) {
+              const newMessage = {
+                message_theme: '会议申请通知',
+                message_content: `${user_name}${getPosition.Position(user_authority)}新增一条会议申请，请您查看`,
+                message_start_time:item.createdAt.toString(),
+                message_push_people:people.user_id,
+                message_type:2
+              }
+              Message.create({...newMessage})
+                .catch(error=>console.log(error.message))
+            }
+          })
+          .catch(error => console.log(error.message));
+      }
+
+      else if( user_authority ===1 ){
+        User.findAll({
+          where: {
+            user_authority: 0,
+          }
+        })
+          .then(res => {
+            for (let people of res) {
+              const newMessage = {
+                message_theme: '会议申请通知',
+                message_content: `${user_name}${getPosition.Position(user_authority)}新增一条会议申请，请您查看`,
+                message_start_time:item.createdAt.toString(),
+                message_push_people:people.user_id,
+                message_type:2
+              }
+              Message.create({...newMessage})
+                .catch(error=>console.log(error.message))
+            }
+          })
+          .catch(error => console.log(error.message));
+      }
+
+      else {
+        User.findAll({
+          where: {
+            user_id: {
+              [Op.ne]: user_id,
+            },
+            user_departments: user_departments,
+            user_authority: {
+              [Op.lt]: user_authority
+            }
+          }
+        })
+          .then(res => {
+            for (let people of res) {
+              const newMessage = {
+                message_theme: '会议申请通知',
+                message_content: `${user_name}${getPosition.Position(user_authority)}新增一条会议申请，请您查看`,
+                message_start_time:item.createdAt.toString(),
+                message_push_people:people.user_id,
+                message_type:2
+              }
+              Message.create({...newMessage})
+                .catch(error=>console.log(error.message))
+            }
+          })
+          .catch(error => console.log(error.message));
+      }
+
       res.send({
         status :200,
         msg :'增加会议申请成功',
@@ -211,7 +401,7 @@ router.get('/getVerifyMeeting',passport.authenticate('jwt', { session: false }) 
     }
   }
 
-  if(user_departments==='新闻中心'){
+  else if(user_departments==='新闻中心'){
     let defaultDepartment1 = '记者部'
     let defaultDepartment2 = '宣传部'
     const findResult = await Meeting.findAll({
@@ -232,7 +422,7 @@ router.get('/getVerifyMeeting',passport.authenticate('jwt', { session: false }) 
     }
   }
 
-  if(user_departments==='学办中心'){
+  else if(user_departments==='学办中心'){
     let defaultDepartment1 = '办公室'
     let defaultDepartment2 = '外联部'
     const findResult = await Meeting.findAll({
@@ -253,7 +443,7 @@ router.get('/getVerifyMeeting',passport.authenticate('jwt', { session: false }) 
     }
   }
 
-  if(user_departments==='团学中心'){
+  else if(user_departments==='团学中心'){
     let defaultDepartment1 = '组织部'
     let defaultDepartment2 = '青年志愿者协会'
     const findResult = await Meeting.findAll({
@@ -274,7 +464,7 @@ router.get('/getVerifyMeeting',passport.authenticate('jwt', { session: false }) 
     }
   }
 
-  if(user_departments==='科创中心'){
+  else if(user_departments==='科创中心'){
     let defaultDepartment1 = '科竞部'
     let defaultDepartment2 = '创业部'
     const findResult = await Meeting.findAll({
@@ -295,7 +485,7 @@ router.get('/getVerifyMeeting',passport.authenticate('jwt', { session: false }) 
     }
   }
 
-  if(user_departments==='主席团'){
+  else if(user_departments==='主席团'){
     let defaultDepartment1 = '文体中心'
     let defaultDepartment2 = '新闻中心'
     let defaultDepartment3 = '学办中心'
@@ -322,7 +512,7 @@ router.get('/getVerifyMeeting',passport.authenticate('jwt', { session: false }) 
     }
   }
 
-  if(user_departments==='老师'){
+  else if(user_departments==='老师'){
     let defaultDepartment = '主席团'
     const findResult = await Meeting.findAll({
       where: {
@@ -344,7 +534,7 @@ router.get('/getVerifyMeeting',passport.authenticate('jwt', { session: false }) 
     res.send({
       status: 200,
       msg: '查询成功',
-      meetingData: findResult.map((item) =>{
+      meetingData: meetingData.map((item) =>{
         return {
           id: item.meeting_id,
           situation: item.meeting_situation,

@@ -7,8 +7,8 @@ const sequelize = new Sequelize(config.database.Database, config.database.User, 
   host: config.database.Host,
   dialect: config.dialect,
 
-  // // 不展示进行SQL语句的查询
-  // logging: false,
+  //不展示进行SQL语句的查询
+  logging: false,
 
   //配置连接池
   pool: config.pool,

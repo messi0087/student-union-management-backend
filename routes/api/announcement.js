@@ -1,8 +1,17 @@
 const express = require('express')
 const router = express.Router()
+const getPosition = require('../../utils/get_position')
+
 //引入 Announcement模型
 const Announcement = require('../../models/Announcement');
+//引入 Message模型
+const Message = require('../../models/Message');
+//引入 User模型
+const User = require('../../models/User');
+
 const passport =require('passport');
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 
 
@@ -13,8 +22,9 @@ const passport =require('passport');
  * @access 接口是公开的
  */
 router.get("/test", async (req, res) => {
+
   res.send({
-    'username': 'john',
+    'username': 'abc',
     'sex': 'man',
     'address': '上海'
   })
@@ -28,9 +38,9 @@ router.get("/test", async (req, res) => {
  * @access 接口是私密的
  */
 router.post('/increaseAnnouncement',passport.authenticate('jwt', { session: false }) ,async (req, res)=>{
-  let { user_departments,user_authority,user_name } =req.user[0].dataValues
+  let { user_departments,user_authority,user_name,user_id } =req.user[0].dataValues
 
-  if(user_authority >=3){
+  if(user_authority >=3 ){
     res.send({
       status :403,
       msg :'您的权限不够发布公告'
@@ -53,7 +63,6 @@ router.post('/increaseAnnouncement',passport.authenticate('jwt', { session: fals
     announcement_position :user_authority
   }
 
-
   Announcement.create({...newAnnouncement})
     .then( (item) =>{
       const newData={
@@ -64,6 +73,29 @@ router.post('/increaseAnnouncement',passport.authenticate('jwt', { session: fals
         position :item.announcement_position,
         time :item.createdAt,
       }
+
+      User.findAll({
+        where: {
+          user_id:{
+            [Op.ne]: user_id
+          }
+        }
+      })
+        .then(res=> {
+          for (let people of res){
+            const newMessage = {
+              message_theme: '公告通知',
+              message_content: `${user_name}${getPosition.Position(user_authority)}新增一条公告，请您查看`,
+              message_start_time:item.createdAt.toString(),
+              message_push_people:people.user_id,
+              message_type: 0
+            }
+            Message.create({...newMessage})
+              .catch(error=>console.log(error.message))
+          }
+        })
+        .catch(error=>console.log(error.message));
+
       res.send({
         status :200,
         msg :'增加公告成功',

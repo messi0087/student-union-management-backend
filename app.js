@@ -12,6 +12,7 @@ const activityAPI = require('./routes/api/activity');
 const userAPI = require('./routes/api/user')
 const announcementAPI = require('./routes/api/announcement')
 const meetingAPI = require('./routes/api/meeting')
+const messageAPI = require('./routes/api/message')
 //使用查询报文body的中间件
 const bodyParser = require('body-parser')
 app.use(bodyParser.json())
@@ -19,6 +20,11 @@ app.use(bodyParser.urlencoded({ extended: false}))
 //使用cookie
 const cookieParser = require('cookie-parser')
 app.use(cookieParser(config.secretOrKey))
+
+//引入工具包
+const getMeetingPeople = require('./utils/get-meeting-people')
+const getActivityPeople = require('./utils/get-activity-people')
+const getPosition = require('./utils/get_position')
 
 
 app.use(passport.initialize());     //passport初始化
@@ -46,39 +52,53 @@ app.use('/user',userAPI)
 app.use('/announcement',announcementAPI)
 app.use('/activity',activityAPI)
 app.use('/meeting',meetingAPI)
+app.use('/message',messageAPI)
 
 app.get('/', function(req, res){
     res.sendFile(__dirname + '/index.html');
 });
 
-//确认数据库是否成功
-// //执行连接数据库
-// sequelize
-//   .authenticate()
-//   .then(function(err) {
-//     console.log('The Database is connected , database is ' + config.database.Database);
-//   })
-//   .catch(function (err) {
-//     console.log('Unable to connect to the database:', err);
-//   });
-//
-// setTimeout(()=>sequelize.close((res)=>console.log(res)),5000)
-
 
 io.on('connection', function(socket){
-    console.log('a user connected');
+    console.log('a user connected',socket.id);
 
     socket.on('disconnect', function(){
         console.log('user disconnected');
     });
 
+    //广播向所有socket连接
+
     socket.on('chat message', function(msg){
         io.emit('chat message',msg);
     });
 
-    socket.on('aaa',function(msg){
-        console.log(msg)
-        io.emit('aaa','我是后端的推给你');
+    socket.on('successAnnouncement',function(msg){
+        socket.broadcast.emit('messageAnnouncement',{
+            id:msg.id,
+            msg:`有一条来自部门是${msg.departments},${msg.name}${msg.position}新的公告,请您查看`
+        });
+    })
+
+    socket.on('successMeeting',async function(msg){
+        let people = (await getMeetingPeople.MeetingPeople(msg)).map(item =>{
+            return item.user_id
+        })
+
+        socket.broadcast.emit('messageMeeting',{
+            id:people,
+            msg:`有一条来自部门是${msg.departments},${msg.name}${getPosition.Position(msg.position)}新的会议申请,请您查看`
+        });
+    })
+
+    socket.on('successActivity',async function(msg){
+        let people = (await getActivityPeople.ActivityPeople(msg)).map(item =>{
+            return item.user_id
+        })
+
+        socket.broadcast.emit('messageActivity',{
+            id:people,
+            msg:`有一条来自部门是${msg.departments},${msg.name}${getPosition.Position(msg.position)}新的活动申请,请您查看`
+        });
     })
 });
 
