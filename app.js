@@ -59,11 +59,20 @@ app.get('/', function(req, res){
 });
 
 
-io.on('connection', function(socket){
-    console.log('a user connected',socket.id);
+const userInformationTable=[]
 
-    socket.on('disconnect', function(){
-        console.log('user disconnected');
+io.on('connection', function(socket){
+    // console.log('a user connected',socket.id);
+
+    // socket.on('disconnect', function(socket){
+    //     console.log('user disconnected',socket);
+    // });
+
+    socket.on('loginOut', function(msg){
+        let condition = userInformationTable.findIndex(item => item.id === msg.id)
+        if(condition !==-1){
+            userInformationTable.splice(condition,1)
+        }
     });
 
     //广播向所有socket连接
@@ -100,6 +109,45 @@ io.on('connection', function(socket){
             msg:`有一条来自部门是${msg.departments},${msg.name}${getPosition.Position(msg.position)}新的活动申请,请您查看`
         });
     })
+
+    socket.on('login', function(msg){
+        let condition = userInformationTable.findIndex(item => item.id === msg.id)
+        if(condition ===-1){
+            userInformationTable.push({
+                socket_id:socket.id,
+                id:msg.id,
+                name:msg.name
+            })
+        }else {
+            userInformationTable[condition].socket_id = socket.id
+        }
+        io.emit('loginSuccess',msg);
+    });
+
+    socket.on('chat', function(msg){
+        let result = userInformationTable.find(item => item.id === Number(msg.id))
+        if(result) {
+            msg.situation = 1
+            socket.broadcast.to(result.socket_id).emit('chatSuccess', msg);
+        }else {
+            const newMessage = {
+                message_theme: `${msg.sendName}：想要跟你聊天`,
+                message_content: msg.sendId+'/'+msg.sendName,
+                message_start_time: String(new Date()),
+                message_push_people:msg.id,
+                message_type: 3
+            }
+            const Message = require('./models/Message');
+            Message.create({...newMessage})
+              .then(()=>{
+                  socket.broadcast.emit('messageTalk',{
+                      id:msg.id,
+                      msg:`${msg.sendName}：想要跟你聊天，发送了消息，请您查看`
+                  });
+              })
+              .catch(error=>console.log(error.message))
+        }
+    });
 });
 
 http.listen(config.port, () => console.log(`服务将会启动在port ${config.port}!`))
